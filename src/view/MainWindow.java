@@ -57,7 +57,7 @@ public class MainWindow extends JFrame {
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
 		
 	
-		JButton emitirChaveCard = new JButton("Emitir Chave");
+		JButton emitirChaveCard = new JButton("Emitir");
 		emitirChaveCard.setPreferredSize(new Dimension(200, 50));
 		emitirChaveCard.setBackground(new Color(12, 192, 223));
 		emitirChaveCard.setForeground(Color.WHITE);
@@ -65,7 +65,7 @@ public class MainWindow extends JFrame {
 		emitirChaveCard.addActionListener(e -> abrirTelaEmissao());
 	
 		
-		JButton devolverChaveCard = new JButton("Devolver Chave");
+		JButton devolverChaveCard = new JButton("Devolver");
 		devolverChaveCard.setPreferredSize(new Dimension(200, 50));
 		devolverChaveCard.setBackground(new Color(12, 192, 223));
 		devolverChaveCard.setForeground(Color.WHITE);
@@ -237,5 +237,10 @@ public class MainWindow extends JFrame {
 			MainWindow mainWindow = new MainWindow();
 			mainWindow.setVisible(true);
 		});
+	}
+
+	public Component getStatusLaboratorios() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

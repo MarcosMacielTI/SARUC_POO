@@ -1,47 +1,52 @@
 package view;
 
+import controller.ControleHistorico;
+
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class JanelaHistorico extends JFrame {
-    private JTable tabelaHistorico;
-    private DefaultTableModel modeloTabela;
+    private ControleHistorico controleHistorico;
+    private JTable historicoTable;
+    private DefaultTableModel tableModel;
 
     public JanelaHistorico() {
+        controleHistorico = new ControleHistorico();
         setTitle("Histórico de Chaves");
-        setSize(800, 400);
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        // Definindo o layout da janela
         setLayout(new BorderLayout());
 
-        // Definindo as colunas da tabela
-        String[] colunas = {"ID", "Qual Laboratório", "Nome da pessoa", "Matrícula", "Horário que pegou", "Horário que trouxe", "Data da devolução", "Descrição"};
+        // Criação da tabela
+        String[] columnNames = {"ID", "Usuário ID", "Chave ID", "Horário que Pegou", "Horário que Trouxe"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        historicoTable = new JTable(tableModel);
 
-        // Criando o modelo da tabela
-        modeloTabela = new DefaultTableModel(colunas, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;  // Tornar todas as células não editáveis
-            }
-        };
+        // Carrega os dados do histórico
+        loadHistorico();
 
-        // Criando a tabela e vinculando ao modelo
-        tabelaHistorico = new JTable(modeloTabela);
-
-        // Adicionando a tabela a um JScrollPane para habilitar a rolagem
-        JScrollPane scrollPane = new JScrollPane(tabelaHistorico);
-
-        // Adicionando o JScrollPane ao centro da janela
+        // Adiciona a tabela a um scroll pane
+        JScrollPane scrollPane = new JScrollPane(historicoTable);
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    // Método para adicionar uma nova linha à tabela
-    public void adicionarEntradaHistorico(int id, String laboratorio, String nomePessoa, String matricula, String horarioPegou, String horarioTrouxe) {
-        modeloTabela.insertRow(0, new Object[]{
-            id, laboratorio, nomePessoa, matricula, horarioPegou, horarioTrouxe, "", ""
-        });
+    private void loadHistorico() {
+        try {
+            ResultSet rs = controleHistorico.obterHistorico();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int usuarioId = rs.getInt("usuarioId");
+                int chaveId = rs.getInt("chaveId");
+                String horarioPegou = rs.getString("horarioPegou");
+                String horarioTrouxe = rs.getString("horarioTrouxe");
+                
+                // Adiciona os dados ao modelo da tabela
+                tableModel.addRow(new Object[]{id, usuarioId, chaveId, horarioPegou, horarioTrouxe});
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar histórico: " + e.getMessage());
+        }
     }
 }
